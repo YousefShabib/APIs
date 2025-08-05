@@ -30,9 +30,22 @@ async function displayPokemons() {
          <img src="${details.image}" />
         <h3>${details.name}</h3>
       `;
-
         grid.appendChild(card);
     }
 }
 
 displayPokemons();
+
+document.getElementById("search").addEventListener("input", function (x) {
+    const searchValue = x.target.value.toLowerCase(); 
+    const cards = document.querySelectorAll(".card");
+
+    cards.forEach(card => {
+        const name = card.querySelector("h3").innerText.toLowerCase();
+        if (name.includes(searchValue)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    });
+});
