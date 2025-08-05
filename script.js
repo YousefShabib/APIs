@@ -1,5 +1,5 @@
 async function getPokemons() {
-    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=50&offset=0");
+    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=500&offset=0");
     const data = await response.json();
     return data.results;
 }
@@ -12,16 +12,14 @@ async function getPokemonDetails(url) {
         image: data.sprites.front_default
     };
 }
+
 async function displayPokemons() {
     const pokemons = await getPokemons();
     const grid = document.getElementById("pokemonGrid");
 
-    //Promise.all
+    pokemons.forEach(async (poke) => {
+        const details = await getPokemonDetails(poke.url);
 
-    const promises = pokemons.map(poke => getPokemonDetails(poke.url));
-    const allDetails = await Promise.all(promises);
-
-    for (let details of allDetails) {
         const card = document.createElement("div");
         card.className = "card";
 
@@ -29,8 +27,9 @@ async function displayPokemons() {
          <img src="${details.image}" />
         <h2>${details.name}</h2>
       `;
+
         grid.appendChild(card);
-    }
+    });
 }
 
 displayPokemons();
@@ -48,5 +47,3 @@ document.getElementById("search").addEventListener("input", function (x) {
         }
     });
 });
-
-
