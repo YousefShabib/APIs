@@ -1,6 +1,3 @@
-
-
-
 async function getPokemons() {
     const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=50&offset=0");
     const data = await response.json();
@@ -14,21 +11,23 @@ async function getPokemonDetails(url) {
         name: data.name,
         image: data.sprites.front_default
     };
-
 }
-
 async function displayPokemons() {
     const pokemons = await getPokemons();
     const grid = document.getElementById("pokemonGrid");
 
-    for (let poke of pokemons) {
-        const details = await getPokemonDetails(poke.url);
+    //Promise.all
+
+    const promises = pokemons.map(poke => getPokemonDetails(poke.url));
+    const allDetails = await Promise.all(promises);
+
+    for (let details of allDetails) {
         const card = document.createElement("div");
         card.className = "card";
 
         card.innerHTML = `
          <img src="${details.image}" />
-        <h3>${details.name}</h3>
+        <h2>${details.name}</h2>
       `;
         grid.appendChild(card);
     }
@@ -37,11 +36,11 @@ async function displayPokemons() {
 displayPokemons();
 
 document.getElementById("search").addEventListener("input", function (x) {
-    const searchValue = x.target.value.toLowerCase(); 
+    const searchValue = x.target.value.toLowerCase();
     const cards = document.querySelectorAll(".card");
 
     cards.forEach(card => {
-        const name = card.querySelector("h3").innerText.toLowerCase();
+        const name = card.querySelector("h2").innerText.toLowerCase();
         if (name.includes(searchValue)) {
             card.style.display = "block";
         } else {
@@ -49,3 +48,5 @@ document.getElementById("search").addEventListener("input", function (x) {
         }
     });
 });
+
+
