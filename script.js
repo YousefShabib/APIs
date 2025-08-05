@@ -1,41 +1,42 @@
-async function getPokemons() {
-    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=500&offset=0");
-    const data = await response.json();
-    return data.results;
+function getPokemons() {
+    return fetch("https://pokeapi.co/api/v2/pokemon?limit=5000&offset=0")
+        .then(response => response.json())
+        .then(data => data.results);
 }
 
-async function getPokemonDetails(url) {
-    const response = await fetch(url);
-    const data = await response.json();
-    return {
-        name: data.name,
-        image: data.sprites.front_default
-    };
+function getPokemonDetails(url) {
+    return fetch(url)
+        .then(response => response.json())
+        .then(data => ({
+            name: data.name,
+            image: data.sprites.front_default
+        }));
 }
 
-async function displayPokemons() {
-    const pokemons = await getPokemons();
+function displayPokemons() {
     const grid = document.getElementById("pokemonGrid");
 
-    pokemons.forEach(async (poke) => {
-        const details = await getPokemonDetails(poke.url);
+    getPokemons().then(pokemons => {
+        pokemons.forEach(poke => {
+            getPokemonDetails(poke.url).then(details => {
+                const card = document.createElement("div");
+                card.className = "card";
 
-        const card = document.createElement("div");
-        card.className = "card";
+                card.innerHTML = `
+                 <img src="${details.image}" />
+                 <h2>${details.name}</h2>
+               `;
 
-        card.innerHTML = `
-         <img src="${details.image}" />
-        <h2>${details.name}</h2>
-      `;
-
-        grid.appendChild(card);
+                grid.appendChild(card);
+            });
+        });
     });
 }
 
 displayPokemons();
 
 document.getElementById("search").addEventListener("input", function (x) {
-    const searchValue = x.target.value.toLowerCase();
+    const searchValue = x.target.value.toLowerCase(); 
     const cards = document.querySelectorAll(".card");
 
     cards.forEach(card => {
