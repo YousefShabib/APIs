@@ -26,14 +26,11 @@ function generatePokemonCard(details) {
   const card = document.createElement("div");
   card.className = "card";
   card.innerHTML = `
-    <img src="${details.image}" alt="${details.name}" />
-    <h3>${details.name}</h3>
+    <div class="card-media">
+      <img src="${details.image}" alt="${details.name}" loading="lazy"/>
+    </div>
+    <h3 class="card-title">${details.name}</h3>
   `;
-  return card;
-}
-
-function renderPokemonCard(details, grid) {
-  const card = generatePokemonCard(details);
   card.addEventListener("click", function () {
     let index = 0;
     const dialog = document.getElementById("pokemonDialog");
@@ -56,6 +53,11 @@ function renderPokemonCard(details, grid) {
     };
     dialog.showModal();
   });
+  return card;
+}
+
+function renderPokemonCard(details, grid) {
+  const card = generatePokemonCard(details);
   grid.appendChild(card);
 }
 
